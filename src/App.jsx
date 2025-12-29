@@ -1,6 +1,6 @@
 
 import './App.css';
-import GitHubUser from './components/githubUser/githubUser';
+import GitHubUser from './components/githubUser/GitHubUser';
 
 function App() {
 

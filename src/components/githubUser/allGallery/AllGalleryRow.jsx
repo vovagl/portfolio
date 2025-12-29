@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import css from './allGalleryRow.module.css';
+import { createPortal } from 'react-dom';
 
 export default function AllGalleryRow({ repos, direction }) {
   const contentRef = useRef(null);
@@ -71,14 +72,16 @@ export default function AllGalleryRow({ repos, direction }) {
         ))}
       </div>
 
-      {selectedImage && (
+      {selectedImage &&
+        createPortal(
         <div className={css.modal_window_image} onClick={closeImage}>
           <a href={selectedImage.ghPages}>
           <img src={selectedImage.img} className={css.modal_image}
           onClick={e => e.stopPropagation()} />
           </a>
           <button className={css.modal_close_button} onClick={closeImage}>close</button>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

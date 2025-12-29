@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
 import AllGalleryRow from "./allGallery/AllGalleryRow";
 import css from './githubUser.module.css'
-
+const base = import.meta.env.BASE_URL;
 export default function GitHubUser() {
   const [userData, setUserData] = useState(null);
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [mounted, setMounted] = useState(false);
+  const [showRepos, setShowRepos] = useState(false);
+  const [showGallery, setShowGallery] = useState(false);
   const username = "vovagl";
+
+  useEffect(() => {
+  setMounted(true);
+  const reposTimer = setTimeout(() => setShowRepos(true), 3000);
+  const galleryTimer = setTimeout(() => setShowGallery(true), 4000);
+  return () => {
+    clearTimeout(reposTimer);
+    clearTimeout(galleryTimer);
+  };
+}, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -25,74 +37,77 @@ export default function GitHubUser() {
 
         const repoExtras = {
   "2026": {
-    img: "../../../public/images/2026.jpg",
+    img: base + "images/2026.jpg",
     ghPages: "https://vovagl.github.io/2026/"
   },
   "24.10": {
-    img: "../../../public/images/24.10.jpg",
+    img: base +"images/24.10.jpg",
     ghPages: "https://vovagl.github.io/24.10/"
   },
   "game": {
-    img: "../../../public/images/game.jpg",
+    img:  base +"images/game.jpg",
     ghPages: "https://vovagl.github.io/game/"
   },
   "ListTodo": {
-    img: "../../../public/images/ListTodo.jpg",
+    img:  base +"images/ListTodo.jpg",
     ghPages: "https://vovagl.github.io/ListTodo/"
   },
   "list_api": {
-    img: "../../../public/images/list_api.jpg",
+    img:  base +"images/list_api.jpg",
     ghPages: "https://vovagl.github.io/list_api/"
   },
   "list_of_films": {
-    img: "../../../public/images/list_of_films.jpg",
+    img:  base +"images/list_of_films.jpg",
     ghPages: "https://list-of-films.onrender.com"
   },
   "test": {
-    img: "../../../public/images/test.jpg",
+    img:  base +"images/test.jpg",
     ghPages: "https://vovagl.github.io/test/"
   },
   "movie_catalog": {
-    img: "../../../public/images/movie_catalog.jpg",
+    img:  base +"images/movie_catalog.jpg",
     ghPages: "https://vovagl.github.io/movie_catalog/"
   },
   "todo-list": {
-    img: "../../../public/images/todo-list.jpg",
+    img:  base +"images/todo-list.jpg",
     ghPages: "https://vovagl.github.io/todo-list/"
   },
   "test01.07": {
-    img: "../../../public/images/test01.07.jpg",
+    img: base + "images/test01.07.jpg",
     ghPages: "https://test01-07-mw8p2ngdd-vovas-projects-ca33eec5.vercel.app/"
   },
   "pixi": {
-    img: "../../../public/images/pixi.jpg",
+    img:  base +"images/pixi.jpg",
     ghPages: "https://vovagl.github.io/pixi/"
   },
   "phones_shop": {
-    img: "../../../public/images/phones_shop.jpg",
+    img:  base +"images/phones_shop.jpg",
     ghPages: "https://vovagl.github.io/phones_shop/"
   },
   "task14.11.25": {
-    img: "../../../public/images/task14.11.25.jpg",
+    img:  base +"images/task14.11.25.jpg",
     ghPages: "https://vovagl.github.io/task14.11.25/"
   },
   "test10.11": {
-    img: "../../../public/images/test10.11.jpg",
+    img:  base +"images/test10.11.jpg",
     ghPages: "https://vovagl.github.io/test10.11/"
   },
   "my__bot": {
-    img: "../../../public/images/MyBot.jpg",
+    img:  base +"images/MyBot.jpg",
     ghPages: "https://t.me/VG1MyBot"
   },
   "test28.07": {
-    img: "../../../public/images/test28-07.jpg",
+    img: base + "images/test28-07.jpg",
     ghPages: "https://test28-07.vercel.app"
   },
   "pixi_game": {
-    img: "../../../public/images/pixi-game.jpg",
+    img:  base +"images/pixi-game.jpg",
     ghPages: " https://pixi-game-jb5i.vercel.app/"
   },
-
+  "portfolio": {
+    img:  base +"images/portfolio.jpg",
+    ghPages: " https://vovagl.github.io/portfolio/"
+  },
 }
 const reposWithExtras = reposJson.map((repo) => ({
   ...repo,
@@ -121,29 +136,35 @@ setRepos(reposWithExtras);
 
 
   return (
-    <div className={css.container}>
+    <>
+    <div className={`${css.container} ${mounted ? css.enter : ""}`}>
       <div className={css.avatar}>
         <div className={css.img}>
-        <img className={css.avatar_img} src="../../../public/images/avatar.jpg" alt="avatar"/>
-        <img className={css.header} src="../../../public/images/header.jpg" alt="header"/>
+        <img className={css.avatar_img} src={import.meta.env.BASE_URL + "images/avatar.jpg"} alt="avatar"/>
+        <img className={css.header} src={import.meta.env.BASE_URL + "images/header.jpg"} alt="header"/>
         </div>
       </div>
-      <div className={css.repos}>
-      <p className={css.repos_p}>
-        <strong>My repos:</strong> {userData.public_repos}
-      </p>
-      <h1 style={{display: 'flex', justifyContent:'center'}}>My GitHub:
-          <a href="https://github.com/vovagl" style={{textDecoration:'none',marginLeft:'10px'}}>visit</a>
-      </h1>
-      <h2 style={{display: 'flex', justifyContent:'center'}}>My telegram:
-          <a href="https://t.me/vova16_06" style={{textDecoration:'none',marginLeft:'10px'}}>
-          <img src="../../../public/images/telegram.png" alt="telegram" style={{width:'45px'}}/>
-          </a>
-      </h2>
-      <h3 style={{marginLeft:'20px'}}>List of repositories:</h3>
-      </div>
-
-          <AllGalleryRow repos={repos}/>
     </div>
+    
+     <div className={css.repos_wrapper}> 
+      <div className={`${css.repos} ${showRepos ? css.enter : ""}`}>
+        <p className={css.repos_p}>
+          <strong>My repos:</strong> {userData.public_repos}
+        </p>
+        <h1 style={{display: 'flex', justifyContent:'center'}}><span className={css.gradient}>My GitHub:</span>
+           <a href="https://github.com/vovagl" style={{textDecoration:'none',marginLeft:'10px'}}>visit</a>
+        </h1>
+        <h2 style={{display: 'flex', justifyContent:'center', textAlign:'center'}}><span className={css.gradient}>My telegram:</span>
+          <a href="https://t.me/vova16_06" style={{textDecoration:'none',marginLeft:'10px'}}>
+          <img src={import.meta.env.BASE_URL + "images/telegram.png"} alt="telegram" style={{width:'45px'}}/>
+          </a>
+        </h2>
+      </div>
+     </div> 
+     <div className={`${css.allGalleryRow} ${showGallery ? css.enter : ""}`}> 
+      <h3 style={{marginLeft:'20px'}}>List of repositories:</h3>
+          <AllGalleryRow repos={repos}/>
+    </div>  
+    </> 
   );
 }
