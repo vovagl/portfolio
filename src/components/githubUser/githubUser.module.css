@@ -7,8 +7,10 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  opacity: 0;
 }
 .enter {
+  opacity: 1;
   animation: appear 4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 @keyframes appear {
