@@ -7,20 +7,20 @@ export default function GitHubUser() {
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [mounted, setMounted] = useState(false);
   const [showRepos, setShowRepos] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(0);
+
   const username = "vovagl";
 
-  useEffect(() => {
-  setMounted(true);
-  const reposTimer = setTimeout(() => setShowRepos(true), 3000);
-  const galleryTimer = setTimeout(() => setShowGallery(true), 4000);
-  return () => {
-    clearTimeout(reposTimer);
-    clearTimeout(galleryTimer);
-  };
-}, []);
+  const handleImageLoad = () => {
+  setImagesLoaded(prev => prev + 1);
+};
+useEffect(() => {
+  if (!showRepos) return;
+  const t = setTimeout(() => setShowGallery(true), 1000);
+  return () => clearTimeout(t);
+}, [showRepos]);
 
   useEffect(() => {
     async function fetchData() {
@@ -137,11 +137,23 @@ setRepos(reposWithExtras);
 
   return (
     <>
-    <div className={`${css.container} ${mounted ? css.enter : ""}`}>
+    <div className={`${css.container} ${imagesLoaded===2 ? css.enter : ""}`}
+    onAnimationEnd={() => {
+      const delay = 1000; 
+      setTimeout(() => setShowRepos(true), delay);
+       }
+    }
+    >
       <div className={css.avatar}>
         <div className={css.img}>
-        <img className={css.avatar_img} src={import.meta.env.BASE_URL + "images/avatar.jpg"} alt="avatar"/>
-        <img className={css.header} src={import.meta.env.BASE_URL + "images/header.jpg"} alt="header"/>
+        <img className={css.avatar_img} 
+        src={import.meta.env.BASE_URL + "images/avatar.jpg"} 
+        alt="avatar"
+        onLoad={handleImageLoad}/>
+        <img className={css.header} 
+        src={import.meta.env.BASE_URL + "images/header.jpg"} 
+        alt="header"
+        onLoad={handleImageLoad}/>
         </div>
       </div>
     </div>
@@ -154,9 +166,13 @@ setRepos(reposWithExtras);
         <h1 style={{display: 'flex', justifyContent:'center'}}><span className={css.gradient}>My GitHub:</span>
            <a href="https://github.com/vovagl" style={{textDecoration:'none',marginLeft:'10px'}}>visit</a>
         </h1>
-        <h2 style={{display: 'flex', justifyContent:'center', textAlign:'center'}}><span className={css.gradient}>My telegram:</span>
-          <a href="https://t.me/vova16_06" style={{textDecoration:'none',marginLeft:'10px'}}>
-          <img src={import.meta.env.BASE_URL + "images/telegram.png"} alt="telegram" style={{width:'45px'}}/>
+        <h2 style={{display: 'flex', justifyContent:'center'}}><span className={css.gradient}>My telegram:</span>
+          <a href="https://t.me/vova16_06" style={{
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration:'none',
+            marginLeft:'10px'}}>
+          <img src={import.meta.env.BASE_URL + "images/telegram.png"} alt="telegram" style={{width:'45px', display: 'block'}}/>
           </a>
         </h2>
       </div>
