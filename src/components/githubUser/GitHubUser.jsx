@@ -138,9 +138,8 @@ setRepos(reposWithExtras);
   return (
     <>
     <div className={`${css.container} ${imagesLoaded===2 ? css.enter : ""}`}
-    onAnimationEnd={() => {
-      const delay = 1000; 
-      setTimeout(() => setShowRepos(true), delay);
+    onAnimationEnd={() => { 
+      setTimeout(() => setShowRepos(true));
        }
     }
     >
