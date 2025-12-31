@@ -10,8 +10,11 @@ export default function AllGalleryRow({ repos, direction }) {
   const widthRef = useRef(0);
   const [paused, setPaused] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const speedRef = useRef(direction === 'left' ? -0.1 : 0.1);
+  const touchStartX = useRef(0);
+  const touchCurrentX = useRef(0);
 
-  const speed = direction === 'left' ? -0.1 : 0.1;
+  
   const doubleImages = [...repos, ...repos];
   const closeImage=()=>{
     setSelectedImage(null);
@@ -32,7 +35,7 @@ export default function AllGalleryRow({ repos, direction }) {
     lastTime.current = time;
 
     if (!paused && widthRef.current) {
-      pos.current += delta * speed;
+      pos.current += delta * speedRef.current;
       if (pos.current >= widthRef.current) {
         pos.current -= widthRef.current;
       }
@@ -51,13 +54,40 @@ export default function AllGalleryRow({ repos, direction }) {
       window.removeEventListener('resize', updateWidth);
     
   }
-}, [paused, speed]);
+}, [paused, speedRef]);
+const handleTouchStart = (e) => {
+  touchStartX.current = e.touches[0].clientX;
+  touchCurrentX.current = touchStartX.current;
+  setPaused(true);
+};
+
+const handleTouchMove = (e) => {
+  touchCurrentX.current = e.touches[0].clientX;
+};
+
+const handleTouchEnd = () => {
+  const diff = touchCurrentX.current - touchStartX.current;
+
+  if (Math.abs(diff) > 30) {
+    if (diff < 0) {
+      speedRef.current = Math.abs(speedRef.current);
+    } 
+    else {
+      speedRef.current = -Math.abs(speedRef.current);
+    }
+  }
+
+  setPaused(false);
+};
 
   return (
     <div
       className={css.carousel_container}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       <div className={css.carousel_content} ref={contentRef}>
         {doubleImages.map((img, i) => (
@@ -75,9 +105,10 @@ export default function AllGalleryRow({ repos, direction }) {
       {selectedImage &&
         createPortal(
         <div className={css.modal_window_image} onClick={closeImage}>
-          <a href={selectedImage.ghPages}>
-          <img src={selectedImage.img} className={css.modal_image}
-          onClick={e => e.stopPropagation()} />
+          <a href={selectedImage.ghPages} onClick={e => e.stopPropagation()}>
+          <div className={css.modal_image_wrapper}> 
+          <img src={selectedImage.img} className={css.modal_image} alt='repos-img'/>
+          </div> 
           </a>
           <button className={css.modal_close_button} onClick={closeImage}>close</button>
         </div>,

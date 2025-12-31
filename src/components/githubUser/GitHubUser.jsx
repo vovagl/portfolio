@@ -171,7 +171,7 @@ setRepos(reposWithExtras);
             alignItems: 'center',
             textDecoration:'none',
             marginLeft:'10px'}}>
-          <img src={import.meta.env.BASE_URL + "images/telegram.png"} alt="telegram" style={{width:'45px', display: 'block'}}/>
+          <img src={import.meta.env.BASE_URL + "images/telegram.png"} alt="telegram" style={{width:'45px'}}/>
           </a>
         </h2>
       </div>
