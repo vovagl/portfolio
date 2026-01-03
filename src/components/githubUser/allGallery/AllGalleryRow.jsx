@@ -13,7 +13,7 @@ export default function AllGalleryRow({ repos, direction }) {
   const speedRef = useRef(direction === 'left' ? -0.1 : 0.1);
   const touchStartX = useRef(0);
   const touchCurrentX = useRef(0);
-
+  const touchStartPos = useRef(0);
   
   const doubleImages = [...repos, ...repos];
   const closeImage=()=>{
@@ -58,25 +58,32 @@ export default function AllGalleryRow({ repos, direction }) {
 const handleTouchStart = (e) => {
   touchStartX.current = e.touches[0].clientX;
   touchCurrentX.current = touchStartX.current;
+  touchStartPos.current = pos.current;
   setPaused(true);
 };
 
 const handleTouchMove = (e) => {
   touchCurrentX.current = e.touches[0].clientX;
+  const diff = touchCurrentX.current - touchStartX.current;
+
+  pos.current = touchStartPos.current - diff;
+  if (pos.current < 0) {
+    pos.current += widthRef.current;
+  } else if (pos.current > widthRef.current) {
+    pos.current -= widthRef.current;
+  }
+
+  contentRef.current.style.transform =
+    `translate3d(${-pos.current}px,0,0)`;
 };
 
 const handleTouchEnd = () => {
   const diff = touchCurrentX.current - touchStartX.current;
 
-  if (Math.abs(diff) > 30) {
-    if (diff < 0) {
-      speedRef.current = Math.abs(speedRef.current);
-    } 
-    else {
-      speedRef.current = -Math.abs(speedRef.current);
-    }
+  if (Math.abs(diff) > 10) {
+    speedRef.current= diff < 0 ? Math.abs(speedRef.current) : -Math.abs(speedRef.current);;
   }
-
+  lastTime.current = 0;
   setPaused(false);
 };
 
