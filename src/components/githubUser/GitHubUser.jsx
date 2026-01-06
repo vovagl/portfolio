@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import AllGalleryRow from "./allGallery/AllGalleryRow";
 import css from './githubUser.module.css'
 const base = import.meta.env.BASE_URL;
@@ -10,8 +10,8 @@ export default function GitHubUser() {
   const [showRepos, setShowRepos] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(0);
-
-  const username = "vovagl";
+  const animationHandled = useRef(false);
+  const TOTAL_IMAGES = 2;
 
   const handleImageLoad = () => {
   setImagesLoaded(prev => prev + 1);
@@ -25,7 +25,7 @@ useEffect(() => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const profileRes = await fetch(`https://api.github.com/users/${username}`);
+        const profileRes = await fetch('https://api.github.com/users/vovagl');
         if (!profileRes.ok) throw new Error("Не удалось получить профиль");
 
         const profileJson = await profileRes.json();
@@ -35,7 +35,7 @@ useEffect(() => {
 
         const reposJson = await reposRes.json();
 
-        const repoExtras = {
+const repoExtras = {
   "2026": {
     img: base + "images/2026.jpg",
     ghPages: "https://vovagl.github.io/2026/"
@@ -113,8 +113,7 @@ const reposWithExtras = reposJson.map((repo) => ({
   ...repo,
   img: repoExtras[repo.name]?.img || "",
   ghPages: repoExtras[repo.name]?.ghPages || repo.html_url
-})).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-
+})).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 setRepos(reposWithExtras);
         
 
@@ -128,7 +127,7 @@ setRepos(reposWithExtras);
     }
 
     fetchData();
-  }, [username]);
+  }, []);
 
   if (loading) return <div>Загрузка...</div>;
   if (error) return <div>Ошибка: {error}</div>;
@@ -137,12 +136,14 @@ setRepos(reposWithExtras);
 
   return (
     <>
-    <div className={`${css.container} ${imagesLoaded===2 ? css.enter : ""}`}
+    <div className={`${css.container} ${imagesLoaded >= TOTAL_IMAGES ? css.enter : ""}`}
     onAnimationEnd={() => { 
-      setTimeout(() => setShowRepos(true));
+      if (animationHandled.current) return;
+      animationHandled.current = true;
+      setTimeout(() => setShowRepos(true),1000);
        }
     }
-    >
+    > 
       <div className={css.avatar}>
         <div className={css.img}>
         <img className={css.avatar_img} 
@@ -155,17 +156,16 @@ setRepos(reposWithExtras);
         onLoad={handleImageLoad}/>
         </div>
       </div>
-    </div>
-    
-     <div className={css.repos_wrapper}> 
-      <div className={`${css.repos} ${showRepos ? css.enter : ""}`}>
+    </div> 
+      <div className={`${css.repos} ${showRepos ? css.enter_repos : ""}`}>
         <p className={css.repos_p}>
           <strong>My repos:</strong> {userData.public_repos}
         </p>
         <h1 style={{display: 'flex', justifyContent:'center'}}><span className={css.gradient}>My GitHub:</span>
            <a href="https://github.com/vovagl" style={{textDecoration:'none',marginLeft:'10px'}}>visit</a>
         </h1>
-        <h2 style={{display: 'flex', justifyContent:'center'}}><span className={css.gradient}>My telegram:</span>
+        <div style={{display: 'flex', justifyContent:'center', textAlign:'center'}}>
+        <h2 style={{display: 'flex'}}><span className={css.gradient}>My telegram:</span>
           <a href="https://t.me/vova16_06" style={{
             display: 'flex',
             alignItems: 'center',
@@ -174,8 +174,8 @@ setRepos(reposWithExtras);
           <img src={import.meta.env.BASE_URL + "images/telegram.png"} alt="telegram" style={{width:'45px'}}/>
           </a>
         </h2>
+        </div>
       </div>
-     </div> 
      <div className={`${css.allGalleryRow} ${showGallery ? css.enter : ""}`}> 
       <h3 style={{marginLeft:'20px'}}>List of repositories:</h3>
           <AllGalleryRow repos={repos}/>
