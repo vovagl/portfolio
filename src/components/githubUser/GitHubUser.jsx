@@ -108,6 +108,22 @@ const repoExtras = {
     img:  base +"images/portfolio.jpg",
     ghPages: " https://vovagl.github.io/portfolio/"
   },
+  "runner": {
+    img: base + "images/runner.jpg",
+    ghPages: "https://vovagl.github.io/runner/"
+  },
+  "task27.02": {
+    img: base + "images/task27.02.jpg",
+    ghPages: "http://task2702.infinityfreeapp.com/"
+  },
+  "task04.03": {
+    img: base + "images/task04.03.jpg",
+    ghPages: "http://task04-03.vercel.app"
+  },
+  "air-battle": {
+    img: base + "images/air-battle.png",
+    ghPages: "https://vovagl.github.io/air-battle/"
+  },
 }
 const reposWithExtras = reposJson.map((repo) => ({
   ...repo,
